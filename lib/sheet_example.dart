@@ -1,4 +1,5 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:test/card_image.dart';
 
 class SheetExample1 extends StatefulWidget {
   const SheetExample1({super.key});
@@ -119,25 +120,27 @@ class _SheetExample1State extends State<SheetExample1> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      headers: [AppBar(title: Text('asfddsf'))],
-      child: Builder(
-        builder: (context) {
-          return PrimaryButton(
-            onPressed: () {
-              openSheet(
-                context: context,
-                builder: (context) {
-                  // Build the sheet content; keep it small and focused on the form.
-                  return buildSheet(context);
-                },
-                // Slide in from the end (right on LTR).
-                position: OverlayPosition.bottom,
-              );
-            },
-            child: const Text('Open Sheet'),
-          ).center();
-        },
-      ),
+      headers: [AppBar(title: Text('Text Ayoub'))],
+      // child: Builder(
+      //   builder: (context) {
+      //     return PrimaryButton(
+      //       onPressed: () {
+      //         openSheet(
+      //           context: context,
+      //           builder: (context) {
+      //             // Build the sheet content; keep it small and focused on the form.
+      //             // return buildSheet(context);
+      //             return SheetTile();
+      //           },
+      //           // Slide in from the end (right on LTR).
+      //           position: OverlayPosition.bottom,
+      //         );
+      //       },
+      //       child: const Text('Open Sheet'),
+      //     ).center();
+      //   },
+      // ),
+      child:  MyCardImage(),
     );
   }
 }
