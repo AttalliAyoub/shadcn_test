@@ -1,0 +1,278 @@
+import '/extensions/extensions.dart';
+import '/shared/emoji_icons.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'dart:math' as math;
+
+class MyAvatar extends StatelessWidget {
+  final String? url;
+  final XFile? file;
+  final IconData? icon;
+  final void Function()? onPressed;
+  final void Function()? editPhoto;
+  final String initials;
+
+  final double aspect;
+  final double editButtonAspect;
+  final Future<Stream<double>?>? stream;
+  final Object? tag;
+  final bool updateButton;
+  final bool bubble;
+  final AvatarWidget? bubbleWidget;
+  final AlignmentGeometry alignment;
+  final Color? backgroundColor;
+
+  const MyAvatar({
+    super.key,
+    required this.initials,
+    this.url,
+    this.file,
+    this.icon,
+    this.onPressed,
+    this.editPhoto,
+    this.stream,
+    this.bubbleWidget,
+    this.tag,
+    this.editButtonAspect = 1.5,
+    this.aspect = .6,
+    this.alignment = Alignment.center,
+    this.backgroundColor,
+    this.updateButton = false,
+    this.bubble = false,
+  });
+
+  bool get isFile => file != null;
+
+  bool get isUrl => url?.isNotEmpty ?? false;
+
+  bool get isNotEmpty => isFile && isUrl;
+
+  bool get isEmpty => !isNotEmpty;
+
+  ImageProvider? get fileImage => file?.provider;
+
+  Widget avatar({
+    required BuildContext context,
+    required double width,
+    IconData? icon,
+    Color? buttonColor,
+    Widget? child,
+    ImageProvider<Object>? backgroundImage,
+    Color? backgroundColor,
+    Color iconColor = Colors.white,
+  }) {
+    return GhostButton(
+      onPressed: onPressed,
+      shape: .circle,
+
+      child: SizedBox.square(
+        dimension: width,
+        child: Stack(
+          children: [
+            Avatar(
+              size: width,
+              backgroundColor: backgroundColor,
+              provider: backgroundImage,
+              initials: initials,
+              badge: bubbleWidget,
+
+              // child: TextButton(
+              // 	style: TextButton.styleFrom(
+              // 		padding: EdgeInsets.zero,
+              // 		minimumSize: Size(width, width),
+              // 		backgroundColor: buttonColor,
+              // 		shape: const StadiumBorder(),
+              // 	),
+              // 	onPressed: onPressed,
+              // 	child:
+              // 			child ??
+              // 			buildIcon(iconColor: iconColor, width: width, radius: width / 2),
+              // ),
+            ).fill(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildIcon({
+    required double width,
+    required Color iconColor,
+    required double radius,
+  }) {
+    final icon = this.icon;
+    if (icon == null) return const SizedBox.shrink();
+    if (isUrl || fileImage != null) return const SizedBox.shrink();
+    return SizedBox.square(
+      dimension: 2 * radius,
+      child: Icon(icon, size: width * aspect * 0.6, color: iconColor).emoji,
+    );
+  }
+
+  Widget image(BuildContext context, double width, double? streamValue) {
+    if (url?.isEmpty ?? true) {
+      return avatar(
+        context: context,
+        width: width,
+        backgroundColor: backgroundColor,
+        backgroundImage: fileImage,
+        icon: isEmpty ? icon : null,
+      );
+    }
+    return CachedNetworkImage(
+      imageUrl: url!,
+      errorWidget: (context, url, error) {
+        return avatar(
+          context: context,
+          width: width,
+          icon: EmojiIcons.warning,
+          backgroundColor: backgroundColor,
+          backgroundImage: fileImage,
+          iconColor: Colors.red,
+        );
+      },
+      imageBuilder: (context, provider) {
+        return avatar(
+          context: context,
+          backgroundColor: backgroundColor,
+          width: width,
+          backgroundImage: fileImage ?? provider,
+          buttonColor: streamValue != null && streamValue > 0
+              ? Colors.black.withValues(alpha: .5)
+              : null,
+        );
+      },
+      progressIndicatorBuilder: (context, url, progress) {
+        return avatar(
+          backgroundColor: backgroundColor,
+          context: context,
+          width: width,
+          child: CircularProgressIndicator(value: progress.progress),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width =
+            math.min(constraints.maxWidth, constraints.maxHeight) * aspect;
+        return Align(
+          alignment: alignment,
+          child: Container(
+            width: width,
+            height: width,
+            alignment: Alignment.center,
+            child: FutureBuilder<Stream<double?>?>(
+              future: stream,
+              builder: (context, snap1) {
+                final stream = snap1.data;
+                return StreamBuilder<double?>(
+                  stream: stream,
+                  builder: (context, snap2) {
+                    final value = snap2.data;
+                    final theme = context.theme;
+                    return Stack(
+                      children: [
+                        (tag?.toString().isNotEmpty ?? false)
+                            ? image(context, width, value)
+                            : Hero(
+                                tag: '$tag',
+                                child: image(context, width, value),
+                              ),
+                        if (snap1.connectionState == ConnectionState.waiting ||
+                            snap2.connectionState == ConnectionState.waiting)
+                          Center(
+                            child: Text(
+                              '${0} %',
+                              style: TextStyle(
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        if (snap1.hasError || snap2.hasError)
+                          const Center(child: Icon(EmojiIcons.warning)),
+                        if (snap2.data != null && snap2.data! > 0)
+                          Center(
+                            child: Text(
+                              '${snap2.data!.format} %',
+                              style: TextStyle(
+                                color: theme.colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                        if (updateButton)
+                          PositionedDirectional(
+                            bottom: 0,
+                            end: 0,
+                            child: Transform.scale(
+                              scale: aspect * editButtonAspect,
+                              alignment: AlignmentDirectional.bottomEnd,
+                              child: TweenAnimationBuilder<double>(
+                                curve: Curves.easeInCirc,
+                                tween: Tween<double>(
+                                  begin: 0,
+                                  end: snap2.data != null && snap2.data! > 0
+                                      ? .0
+                                      : 1,
+                                ),
+                                duration: const Duration(milliseconds: 300),
+                                child: IconButton.primary(
+                                  onPressed: editPhoto,
+                                  icon: const Icon(Icons.add_a_photo_outlined),
+                                ),
+                                builder: (context, value, child) {
+                                  return Transform.scale(
+                                    scale: value,
+                                    origin: Offset.zero,
+                                    child: child,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        PositionedDirectional(
+                          bottom: 0,
+                          end: 0,
+                          height: 10,
+                          width: 10,
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween<double>(
+                              begin: 0.0,
+                              end: bubble ? 1.0 : 0.0,
+                            ),
+                            duration: const Duration(milliseconds: 300),
+                            builder: (context, value, child) {
+                              return Transform.scale(
+                                scale: value,
+                                child: child,
+                              );
+                            },
+                            child:
+                                bubbleWidget ??
+                                Container(
+                                  height: 10,
+                                  width: 10,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

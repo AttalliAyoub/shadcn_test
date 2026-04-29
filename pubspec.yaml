@@ -39,6 +39,8 @@ dependencies:
   go_router: ^17.2.2
   phonecodes: ^0.0.4
   country_flags: ^4.1.2
+  cached_network_image: ^3.4.1
+  image_picker: ^1.2.1
 
 dev_dependencies:
   flutter_test:

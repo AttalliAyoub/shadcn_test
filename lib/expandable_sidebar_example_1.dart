@@ -1,5 +1,6 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:test/card_image.dart';
+import 'package:test/main.dart';
 
 class ExpandableSidebarExample1 extends StatefulWidget {
   const ExpandableSidebarExample1({super.key});
@@ -50,7 +51,6 @@ class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1> {
     );
   }
 
-
   Widget drawer([bool overrideExpaneded = true]) {
     final theme = Theme.of(context);
     return NavigationRail(
@@ -86,6 +86,26 @@ class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1> {
         ),
       ],
       footer: [
+        Builder(
+          builder: (context) {
+            final appState = context.findAncestorStateOfType<MyAppState>();
+            if (appState == null) return SizedBox.shrink();
+            final dark = appState.dark;
+
+            return buildLabel('Theme', [
+              NavigationItem(
+                label: Text('Theme'),
+                onChanged: (value) {
+                  print(value);
+                  appState.toggleTheme();
+                },
+                child: Icon(dark ? LucideIcons.moon : LucideIcons.sun),
+                // trailing: Switch(value: dark, onChanged: appState.toggleTheme),
+              ),
+            ]);
+          },
+        ),
+        const Gap(20),
         SafeArea(
           child: Builder(
             builder: (context) {
@@ -129,7 +149,7 @@ class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1> {
                   );
                 },
               );
-            }
+            },
           ),
         ),
       ],
@@ -176,9 +196,7 @@ class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1> {
           drawer(false),
           const VerticalDivider(),
           // Placeholder for the main content area.
-          Flexible(
-            child: MyCardImage(),
-          ),
+          Flexible(child: MyCardImage()),
         ],
       ),
     );
