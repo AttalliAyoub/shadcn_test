@@ -7,7 +7,6 @@ import 'package:test/avatar.dart';
 import 'package:test/expandable_sidebar_example_1.dart';
 import 'package:test/utils/animated_boarder.dart';
 import 'package:test/utils/custom_avatar_badge.dart';
-import 'package:test/utils/progress_border.dart';
 
 class MyCardImage extends StatefulWidget {
   const MyCardImage({super.key});
@@ -152,7 +151,7 @@ class MyCardImageState extends State<MyCardImage> {
                   // url: 'https://x.com/i/status/2044431334828081592',
                   url: 'https://picsum.photos/300/300?random=$imageIndex',
                   initials: Avatar.getInitials('Ayoub Attalli'),
-                  size: 100,
+                  size: 50,
                   progressStyle: ProgressBorder.fromContext(context),
                   // badge: AvatarBadge(
                   //   child: Text(
@@ -175,7 +174,7 @@ class MyCardImageState extends State<MyCardImage> {
                     });
                   },
                 ),
-
+                const Gap(50),
                 // AnimatedBorder(
                 //   shape: ProgressBorder.fromContext(
                 //     context,

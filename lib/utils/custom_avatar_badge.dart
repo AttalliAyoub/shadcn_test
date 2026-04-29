@@ -1,6 +1,7 @@
+import 'package:defer_pointer/defer_pointer.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-class CustomAvatarBadge extends StatelessWidget implements AvatarWidget {
+class CustomAvatarBadge extends DeferPointer implements AvatarWidget {
   /// Size of the badge in logical pixels.
   ///
   /// Controls both width and height of the circular badge container.
@@ -21,7 +22,6 @@ class CustomAvatarBadge extends StatelessWidget implements AvatarWidget {
   ///
   /// Can be an icon, text, or other widget. If null, displays as a
   /// solid colored circle using [color].
-  final Widget? child;
 
   /// Background color of the badge.
   ///
@@ -51,12 +51,14 @@ class CustomAvatarBadge extends StatelessWidget implements AvatarWidget {
   /// );
   /// ```
   const CustomAvatarBadge({
+    required super.child,
     super.key,
-    this.child,
-    double? width,
+    super.paintOnTop = true,
+    super.link,
     this.height,
     this.borderRadius,
     this.color,
+    double? width,
   }): size = width;
 
   @override
@@ -71,7 +73,7 @@ class CustomAvatarBadge extends StatelessWidget implements AvatarWidget {
         borderRadius:
             BorderRadius.circular(borderRadius ?? theme.radius * border),
       ),
-      child: child,
+      child: super.build(context),
     );
   }
 }
