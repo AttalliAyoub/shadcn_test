@@ -6,6 +6,7 @@ import 'package:country_flags/country_flags.dart';
 import 'package:test/avatar.dart';
 import 'package:test/expandable_sidebar_example_1.dart';
 import 'package:test/utils/animated_boarder.dart';
+import 'package:test/utils/custom_avatar_badge.dart';
 import 'package:test/utils/progress_border.dart';
 
 class MyCardImage extends StatefulWidget {
@@ -153,11 +154,20 @@ class MyCardImageState extends State<MyCardImage> {
                   initials: Avatar.getInitials('Ayoub Attalli'),
                   size: 100,
                   progressStyle: ProgressBorder.fromContext(context),
-                  badge: AvatarBadge(
-                    child: Text(
-                      '$imageIndex',
-                      style: TextStyle(fontSize: 10),
-                    ).center(),
+                  // badge: AvatarBadge(
+                  //   child: Text(
+                  //     '$imageIndex',
+                  //     style: TextStyle(fontSize: 10),
+                  //   ).center(),
+                  // ),
+                  badge: CustomAvatarBadge(
+                    child: PrimaryBadge(
+                      onPressed: () {
+                        print('Ayoub Attalli');
+                      },
+                      leading: const Icon(Icons.edit),
+                      child: Text('Edit').center(),
+                    ),
                   ),
                   onPressed: () {
                     setState(() {
@@ -192,7 +202,7 @@ class MyCardImageState extends State<MyCardImage> {
                   builder: (context, shape, child) {
                     return child.withPadding(all: shape.side.width);
                   },
-                  ),
+                ),
               ],
             ).gap(20),
             const Gap(25),
