@@ -1,7 +1,8 @@
 import 'dart:io';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:defer_pointer/defer_pointer.dart';
+
 import '/utils/animated_boarder.dart';
 
 class MyAvatar extends StatelessWidget {
@@ -12,6 +13,7 @@ class MyAvatar extends StatelessWidget {
   final AvatarWidget? badge;
   final double? size;
   final bool loading;
+  final bool showBadge;
   final ProgressBorder? progressStyle;
   final TextDirection? textDirection;
   final Duration duration;
@@ -26,6 +28,7 @@ class MyAvatar extends StatelessWidget {
     this.textDirection,
     this.duration = const Duration(seconds: 1),
     this.loading = false,
+    this.showBadge = true,
     this.progressStyle,
     required this.initials,
   });
@@ -39,35 +42,38 @@ class MyAvatar extends StatelessWidget {
         progressStyle ??
         ProgressBorder.fromContext(context, textDirection: textDirection);
     return Button(
-      style: ButtonStyle.fixed(shape: .circle, density: .compact),
-      onPressed: onPressed,
-      child: Avatar(
-        initials: initials,
-        provider: provider,
-        badge: badge,
-        size: size,
-      ),
-    ).asSkeleton(enabled: loading).animatedBorder(
-			context,
-      duration: duration,
-      textDirection: textDirection,
-      shape: borderShape.copyWith(
-        borderRadius: .circular(size ?? 100),
-        progress: progress,
-        textDirection: textDirection,
-        dashLength: loading ? .2 : null,
-      ),
-			builder: (context, shape, child) {
-				return child.withPadding(all: shape.side.width);
-			}
-		);
+          style: ButtonStyle.fixed(shape: .circle, density: .compact),
+          onPressed: onPressed,
+          child: Avatar(
+            initials: initials,
+            provider: provider,
+            badge: showBadge ? badge! : null,
+            size: size,
+          ),
+        )
+        .asSkeleton(enabled: loading)
+        .animatedBorder(
+          context,
+          duration: duration,
+          textDirection: textDirection,
+          shape: borderShape.copyWith(
+            borderRadius: .circular(size ?? 100),
+            progress: progress,
+            textDirection: textDirection,
+            dashLength: loading ? .2 : null,
+          ),
+          builder: (context, shape, child) {
+            return child.withPadding(all: shape.side.width);
+          },
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    //   return _build(context);
-    // }
-    // Widget _build(BuildContext context) {
+    return DeferredPointerHandler(child: _build(context));
+  }
+
+  Widget _build(BuildContext context) {
     if (file != null) {
       return _basic(context, provider: FileImage(File(file!.path)));
     }

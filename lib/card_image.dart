@@ -81,7 +81,6 @@ class MyCardImageState extends State<MyCardImage> {
             ),
           ],
           title: Text('Dido Attalli'),
-    
         ),
         // PreferredSize(
         //   preferredSize: const Size.fromHeight(2),
@@ -137,11 +136,8 @@ class MyCardImageState extends State<MyCardImage> {
                       TextField(
                         readOnly: true,
                         textAlign: .center,
-                        key: ValueKey(
-                          '${Currency.dzd.code}/${Currency.dzd.symbol}',
-                        ),
-                        initialValue:
-                            '${Currency.dzd.code}/${Currency.dzd.symbol}',
+                        key: ValueKey('${Currency.dzd.code}/${Currency.dzd.symbol}'),
+                        initialValue: '${Currency.dzd.code}/${Currency.dzd.symbol}',
                       ).sized(width: 90),
                     ],
                   ),
@@ -151,25 +147,19 @@ class MyCardImageState extends State<MyCardImage> {
                     content: const Text(
                       'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                     ),
-                    leading: Avatar(
-                      initials: Avatar.getInitials('Ayoub Attalli'),
-                    ),
+                    leading: Avatar(initials: Avatar.getInitials('Ayoub Attalli')),
                     trailing: const Icon(Icons.arrow_forward),
                   ),
                   const Gap(24),
                   Button(
-                    style: ButtonStyle.muted(
-                      density: .compact,
-                    ),
+                    style: ButtonStyle.muted(density: .compact),
                     onPressed: () {},
                     child: Basic(
                       title: const Text('Skeleton Example 1'),
                       content: const Text(
                         'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
                       ),
-                      leading: Avatar(
-                        initials: Avatar.getInitials('Ayoub Attali'),
-                      ),
+                      leading: Avatar(initials: Avatar.getInitials('Ayoub Attali')),
                       // Note: Avatar and other Image related widget needs its own skeleton
                       trailing: const Icon(Icons.arrow_forward),
                     ),
@@ -205,7 +195,7 @@ class MyCardImageState extends State<MyCardImage> {
                           });
                         },
                       ),
-
+                      const Gap(50),
                       // AnimatedBorder(
                       //   shape: ProgressBorder.fromContext(
                       //     context,
@@ -246,9 +236,7 @@ class MyCardImageState extends State<MyCardImage> {
                           builder: (context) {
                             return AlertDialog(
                               title: const Text('Card Image'),
-                              content: const Text(
-                                'You clicked on a card image.',
-                              ),
+                              content: const Text('You clicked on a card image.'),
                               actions: [
                                 PrimaryButton(
                                   onPressed: () {
