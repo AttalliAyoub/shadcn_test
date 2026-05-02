@@ -3,11 +3,12 @@ import 'package:flutter/gestures.dart';
 import 'package:phonecodes/phonecodes.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:country_flags/country_flags.dart';
-import 'package:test/avatar.dart';
-import 'package:test/expandable_sidebar_example_1.dart';
-import 'package:test/utils/animated_boarder.dart';
-import 'package:test/utils/custom_avatar_badge.dart';
-import 'package:test/utils/progress_border.dart';
+import 'package:test/utils/context.dart';
+import '/avatar.dart';
+import '/expandable_sidebar_example_1.dart';
+import '/utils/animated_boarder.dart';
+import '/utils/bool.dart';
+import '/utils/custom_avatar_badge.dart';
 
 class MyCardImage extends StatefulWidget {
   const MyCardImage({super.key});
@@ -79,179 +80,280 @@ class MyCardImageState extends State<MyCardImage> {
               },
             ),
           ],
-          title: Text('Test page'),
+          title: Text('Dido Attalli'),
+    
+        ),
+        // PreferredSize(
+        //   preferredSize: const Size.fromHeight(2),
+        //   child: LinearProgressIndicator(),
+        // ),
+        // LinearProgressIndicator(),
+      ],
+      footers: [
+        const Divider(),
+        Builder(
+          builder: (context) {
+            return bottomNavigationBar(context, false) ?? SizedBox.shrink();
+          },
         ),
       ],
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(
-          dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
-        ),
-        child: ListView(
-          padding: .all(20),
+      child: MediaQuery.removeViewInsets(
+        context: context,
+        removeBottom: true,
+        child: Stack(
+          fit: .expand,
           children: [
-            ButtonGroup(
-              children: [
-                TextField(
-                  readOnly: true,
-                  features: [
-                    InputFeature.leading(
-                      AspectRatio(
-                        aspectRatio: 1.5,
-                        child:
-                            CountryFlag.fromCountryCode(
-                              country.code,
-                              theme: ImageTheme(width: 10),
-                            ).clipRRect(
-                              borderRadius: .circular(
-                                Theme.of(context).radius * 3,
-                              ),
+            ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
+              ),
+              child: ListView(
+                padding: .all(20),
+                children: [
+                  ButtonGroup(
+                    children: [
+                      TextField(
+                        readOnly: true,
+                        features: [
+                          InputFeature.leading(
+                            AspectRatio(
+                              aspectRatio: 1.5,
+                              child:
+                                  CountryFlag.fromCountryCode(
+                                    country.code,
+                                    theme: ImageTheme(width: 10),
+                                  ).clipRRect(
+                                    borderRadius: .circular(
+                                      Theme.of(context).radius * 3,
+                                    ),
+                                  ),
                             ),
-                      ),
-                    ),
-                  ],
-                ).sized(width: 57),
-                TextField(
-                  placeholder: Text('Phone ${Theme.of(context).radius}'),
-                ).expanded(),
-                TextField(
-                  readOnly: true,
-                  textAlign: .center,
-                  key: ValueKey('${Currency.dzd.code}/${Currency.dzd.symbol}'),
-                  initialValue: '${Currency.dzd.code}/${Currency.dzd.symbol}',
-                ).sized(width: 90),
-              ],
-            ),
-            const Gap(20),
-            Basic(
-              title: const Text('Skeleton Example 1'),
-              content: const Text(
-                'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-              ),
-              leading: Avatar(initials: Avatar.getInitials('Ayoub Attalli')),
-              trailing: const Icon(Icons.arrow_forward),
-            ),
-            const Gap(24),
-            Button(
-              style: ButtonVariance.outline,
-              onPressed: () {},
-              child: Basic(
-                title: const Text('Skeleton Example 1'),
-                content: const Text(
-                  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-                ),
-                leading: Avatar(initials: Avatar.getInitials('Ayoub Attali')),
-                // Note: Avatar and other Image related widget needs its own skeleton
-                trailing: const Icon(Icons.arrow_forward),
-              ),
-            ).asSkeleton(enabled: false),
-            const Gap(20),
-            Row(
-              children: [
-                MyAvatar(
-                  key: const ValueKey('salim'),
-                  // url: 'https://x.com/i/status/2044431334828081592',
-                  url: 'https://picsum.photos/300/300?random=$imageIndex',
-                  initials: Avatar.getInitials('Ayoub Attalli'),
-                  size: 100,
-                  progressStyle: ProgressBorder.fromContext(context),
-                  // badge: AvatarBadge(
-                  //   child: Text(
-                  //     '$imageIndex',
-                  //     style: TextStyle(fontSize: 10),
-                  //   ).center(),
-                  // ),
-                  badge: CustomAvatarBadge(
-                    child: PrimaryBadge(
-                      onPressed: () {
-                        print('Ayoub Attalli');
-                      },
-                      leading: const Icon(Icons.edit),
-                      child: Text('Edit').center(),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      imageIndex++;
-                    });
-                  },
-                ),
-
-                // AnimatedBorder(
-                //   shape: ProgressBorder.fromContext(
-                //     context,
-
-                //     progress: (imageIndex * 10 / 100).clamp(0, 1),
-                //   ),
-
-                //   child: ,
-                // ),
-                Button.primary(
-                  child: Text('click me'),
-                  onPressed: () {
-                    setState(() {
-                      imageIndex++;
-                    });
-                  },
-                ).animatedBorder(
-                  context,
-                  shape: .fromContext(
-                    context,
-                    progress: (imageIndex * 10 / 100).clamp(0, 1),
-                  ),
-                  duration: const Duration(seconds: 2),
-                  builder: (context, shape, child) {
-                    return child.withPadding(all: shape.side.width);
-                  },
-                ),
-              ],
-            ).gap(20),
-            const Gap(25),
-            for (int i = 0; i < 10; i++)
-              CardImage(
-                direction: .horizontal,
-                // Simple interaction: open a dialog on tap.
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: const Text('Card Image'),
-                        content: const Text('You clicked on a card image.'),
-                        actions: [
-                          PrimaryButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Close'),
                           ),
                         ],
-                      );
-                    },
-                  );
-                },
-                // Network image; replace with your own provider as needed.
-                image: Image.network(
-                  'https://picsum.photos/300/300?random=$i',
-                  width: 65,
-                ),
-                // leading: const Icon(Icons.abc),
-                // leading: Text('Card Number ${i + 1}'),
-                // trailing: Text('+214'),
-                // content: Image.network('https://picsum.photos/300/300?random=$i', width: 65),
-                // Title and subtitle appear over the image.
-                title: Text('Card Number ${i + 1}'),
-                subtitle: const Text('Lorem ipsum dolor sit amet'),
-                trailing: const Icon(LucideIcons.moveRight),
+                      ).sized(width: 57),
+                      TextField(
+                        placeholder: Text('Phone ${Theme.of(context).radius}'),
+                      ).expanded(),
+                      TextField(
+                        readOnly: true,
+                        textAlign: .center,
+                        key: ValueKey(
+                          '${Currency.dzd.code}/${Currency.dzd.symbol}',
+                        ),
+                        initialValue:
+                            '${Currency.dzd.code}/${Currency.dzd.symbol}',
+                      ).sized(width: 90),
+                    ],
+                  ),
+                  const Gap(20),
+                  Basic(
+                    title: const Text('Skeleton Example 1'),
+                    content: const Text(
+                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                    ),
+                    leading: Avatar(
+                      initials: Avatar.getInitials('Ayoub Attalli'),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward),
+                  ),
+                  const Gap(24),
+                  Button(
+                    style: ButtonStyle.muted(
+                      density: .compact,
+                    ),
+                    onPressed: () {},
+                    child: Basic(
+                      title: const Text('Skeleton Example 1'),
+                      content: const Text(
+                        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+                      ),
+                      leading: Avatar(
+                        initials: Avatar.getInitials('Ayoub Attali'),
+                      ),
+                      // Note: Avatar and other Image related widget needs its own skeleton
+                      trailing: const Icon(Icons.arrow_forward),
+                    ),
+                  ).asSkeleton(enabled: false),
+                  const Gap(20),
+                  Row(
+                    children: [
+                      MyAvatar(
+                        key: const ValueKey('salim'),
+                        // url: 'https://x.com/i/status/2044431334828081592',
+                        url: 'https://picsum.photos/300/300?random=$imageIndex',
+                        initials: Avatar.getInitials('Ayoub Attalli'),
+                        size: 100,
+                        progressStyle: ProgressBorder.fromContext(context),
+                        // badge: AvatarBadge(
+                        //   child: Text(
+                        //     '$imageIndex',
+                        //     style: TextStyle(fontSize: 10),
+                        //   ).center(),
+                        // ),
+                        badge: CustomAvatarBadge(
+                          child: PrimaryBadge(
+                            onPressed: () {
+                              print('Ayoub Attalli');
+                            },
+                            leading: const Icon(Icons.edit),
+                            child: Text('Edit').center(),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            imageIndex++;
+                          });
+                        },
+                      ),
 
-                // padding: EdgeInsets.zero,
-                // leading: CountryPickerUtils.getDefaultFlagImage(country),
-                // title: Text(countryName),
-                // // subtitle: Text(country.),
-                // trailing: Text('+${country.phoneCode}'),
-              ).sized(height: 65, width: .infinity).withPadding(bottom: 25),
+                      // AnimatedBorder(
+                      //   shape: ProgressBorder.fromContext(
+                      //     context,
+
+                      //     progress: (imageIndex * 10 / 100).clamp(0, 1),
+                      //   ),
+
+                      //   child: ,
+                      // ),
+                      Button.primary(
+                        child: Text('click me'),
+                        onPressed: () {
+                          setState(() {
+                            imageIndex++;
+                          });
+                        },
+                      ).animatedBorder(
+                        context,
+                        shape: .fromContext(
+                          context,
+                          progress: (imageIndex * 10 / 100).clamp(0, 1),
+                        ),
+                        duration: const Duration(seconds: 2),
+                        builder: (context, shape, child) {
+                          return child.withPadding(all: shape.side.width);
+                        },
+                      ),
+                    ],
+                  ).gap(20),
+                  const Gap(25),
+                  for (int i = 0; i < 10; i++)
+                    CardImage(
+                      direction: .horizontal,
+                      // Simple interaction: open a dialog on tap.
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: const Text('Card Image'),
+                              content: const Text(
+                                'You clicked on a card image.',
+                              ),
+                              actions: [
+                                PrimaryButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Text('Close'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      // Network image; replace with your own provider as needed.
+                      image: Image.network(
+                        'https://picsum.photos/300/300?random=$i',
+                        width: 65,
+                      ),
+                      // leading: const Icon(Icons.abc),
+                      // leading: Text('Card Number ${i + 1}'),
+                      // trailing: Text('+214'),
+                      // content: Image.network('https://picsum.photos/300/300?random=$i', width: 65),
+                      // Title and subtitle appear over the image.
+                      title: Text('Card Number ${i + 1}'),
+                      subtitle: const Text('Lorem ipsum dolor sit amet'),
+                      trailing: const Icon(LucideIcons.moveRight),
+
+                      // padding: EdgeInsets.zero,
+                      // leading: CountryPickerUtils.getDefaultFlagImage(country),
+                      // title: Text(countryName),
+                      // // subtitle: Text(country.),
+                      // trailing: Text('+${country.phoneCode}'),
+                    ).sized(height: 65, width: .infinity).withPadding(bottom: 25),
+                ],
+              ),
+            ),
+            floatingActionButton,
           ],
         ),
       ),
+    );
+  }
+
+  Widget get floatingActionButton {
+    final desktop = context.desktop;
+    return Align(
+      alignment: .bottomEnd,
+      child: PrimaryButton(
+        shape: desktop ? .circle : .rectangle,
+        density: desktop ? .iconComfortable : .normal,
+        onPressed: () => {},
+        leading: desktop.build((desktop) {
+          if (desktop) return null;
+          return Icon(desktop ? RadixIcons.pencil2 : LucideIcons.scanBarcode);
+        }),
+        child: desktop.build((mobile) {
+          if (mobile) {
+            return Icon(mobile ? LucideIcons.scanBarcode : RadixIcons.pencil2);
+          }
+          return Text('Scan');
+        }),
+      ).withPadding(all: 16),
+    );
+  }
+
+  Key? selected = const ValueKey(0);
+
+  NavigationBarAlignment alignment = NavigationBarAlignment.spaceAround;
+  NavigationLabelType labelType = NavigationLabelType.none;
+  bool customButtonStyle = true;
+  bool expanded = true;
+
+  NavigationItem buildButton(String label, IconData icon, Key key) {
+    return NavigationItem(
+      key: key,
+      style: customButtonStyle
+          ? const ButtonStyle.muted(density: ButtonDensity.icon)
+          : null,
+      selectedStyle: customButtonStyle
+          ? const ButtonStyle.fixed(density: ButtonDensity.icon)
+          : null,
+      label: Text(label),
+      child: Icon(icon),
+    );
+  }
+
+  Widget? bottomNavigationBar(BuildContext context, bool desktop) {
+    if (desktop) return null;
+    // return null;
+    return NavigationBar(
+      alignment: alignment,
+      labelType: labelType,
+      expanded: expanded,
+      onSelected: (key) {
+        setState(() {
+          selected = key;
+        });
+      },
+      selectedKey: selected,
+      children: [
+        buildButton('Home', BootstrapIcons.house, const ValueKey(0)),
+        buildButton('Explore', BootstrapIcons.compass, const ValueKey(1)),
+        buildButton('Library', BootstrapIcons.musicNoteList, const ValueKey(2)),
+        buildButton('Profile', BootstrapIcons.person, const ValueKey(3)),
+        buildButton('App', BootstrapIcons.appIndicator, const ValueKey(4)),
+      ],
     );
   }
 }

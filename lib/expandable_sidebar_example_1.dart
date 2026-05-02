@@ -1,6 +1,7 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:test/card_image.dart';
 import 'package:test/main.dart';
+import 'package:test/utils/responsive.dart';
 
 class ExpandableSidebarExample1 extends StatefulWidget {
   const ExpandableSidebarExample1({super.key});
@@ -10,7 +11,8 @@ class ExpandableSidebarExample1 extends StatefulWidget {
       ExpandableSidebarExample1State();
 }
 
-class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1> {
+class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1>
+    with ResponsiveMxin {
   // When true, the rail expands to show labels; when false, it collapses to
   // an icon-only sidebar.
   bool expanded = false;
@@ -90,7 +92,7 @@ class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1> {
           builder: (context) {
             final appState = context.findAncestorStateOfType<MyAppState>();
             if (appState == null) return SizedBox.shrink();
-            final dark = appState.dark;
+            final dark = MyAppState.dark;
 
             return buildLabel('Theme', [
               NavigationItem(
@@ -193,8 +195,8 @@ class ExpandableSidebarExample1State extends State<ExpandableSidebarExample1> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          drawer(false),
-          const VerticalDivider(),
+          if (!mobile) drawer(false),
+          if (!mobile) const VerticalDivider(),
           // Placeholder for the main content area.
           Flexible(child: MyCardImage()),
         ],
